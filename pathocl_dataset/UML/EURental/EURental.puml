@@ -1,0 +1,63 @@
+@startuml EURental
+
+' classes '
+class Date{
+    date: String
+}
+
+class Car{
+    regNum: String
+}
+
+class CarGroup{
+    category: String
+}
+
+class Branch{
+    address: String
+}
+
+class Quote{
+    value: Integer
+}
+
+class Rental{
+    id: String
+    price: Real
+    state: String
+    startingDate: Date
+    endingDate: Date
+}
+
+class Customer{
+    id: String
+    name: String
+    birthday: Date
+    licenseExpData: Date
+    premium: Boolean
+    discount: Integer
+}
+
+class BlackListed{
+    blackListedDate: Date
+}
+
+' associations '
+Car "car 1..*" -- "carGroup 1" CarGroup
+
+Car "car 0..1" -- "rentalAgreement *" Rental
+
+CarGroup "low 0..1" -- "high 0..1" CarGroup
+
+CarGroup "carGroup 1..*" -- "branch 1..*" Branch 
+(CarGroup, Branch) .. Quote
+
+Branch "pickUpBranch 1" -- "pickUpRental *" Rental
+
+Branch "dropOffBranch 1" -- "dropOffRental *" Rental
+
+Rental "rental 1..*" -- "driver 1..*" Customer
+
+BlackListed --|> Customer
+
+@enduml

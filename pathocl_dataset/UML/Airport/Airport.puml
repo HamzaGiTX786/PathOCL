@@ -1,0 +1,37 @@
+@startuml Airport
+
+' classes '
+class Airport{
+    name: String
+}
+
+class Flight{
+    departTime: Date
+    arrivalTime: Date
+    duration: Date
+    maxNrPassenger: Integer
+}
+
+class Airline{
+    name: String
+}
+
+class Passenger{
+    minAge: Integer
+    age: Integer
+    needsAssistance: Boolean
+    book(f: Flight)
+}
+
+' associations '
+Airport "origin 1" -- "departingFlights *" Flight
+
+Airport "destination 1" -- "arrivingFlights *" Flight
+
+Flight "flights *" -- "airline 1" Airline
+
+Flight "flight 1" -- "passengers *" Passenger
+
+Passenger "CEO 0..1" -- "airline 0..1" Airline
+
+@enduml

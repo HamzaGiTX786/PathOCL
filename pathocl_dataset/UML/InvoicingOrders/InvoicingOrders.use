@@ -1,0 +1,39 @@
+-- model name
+
+model InvoicingOrders
+
+-- classes
+
+class Order
+attributes
+    id: Integer
+    quantity: Integer
+    state: String
+operations
+    Order(prd: Product, qty: Integer): OclVoid
+    cancel(): Boolean
+    invoice(): Boolean
+end
+
+class Product
+attributes
+    id: Integer
+    stock: Integer
+operations
+    Product(): Boolean
+    supply(qty: Integer): Boolean
+    release(qty: Integer): Boolean
+end
+
+-- associations
+
+association OrderProduct between
+    Order[1] role order
+    Product[1] role product
+end
+
+-- constraints
+
+constraints
+
+

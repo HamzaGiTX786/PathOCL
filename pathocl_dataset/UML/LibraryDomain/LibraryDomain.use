@@ -1,0 +1,87 @@
+-- model name
+
+model LibraryDomain
+
+-- classes
+
+class Date
+attributes
+    Date: Integer
+end
+
+class Book
+attributes
+    title: String
+end
+
+class BookCopy
+attributes
+    barcode: Integer
+    onReserve: Boolean
+end
+
+class Loan
+attributes
+    startDate: Date
+    endDate: Date
+end
+
+class Member
+attributes
+    name: String
+    email: String
+end
+
+class MemberCategory
+attributes
+    description: String
+    maxNumberBooks: Integer
+end
+
+class BookCategory
+attributes
+    description: String
+end
+
+class LoanPeriod
+attributes
+    duration: Integer
+end
+
+-- associations
+
+association BM between
+    Book[0..*] role bookOnHold
+    Member[0..*] role requester ordered
+end
+
+-- Extension
+association BBC between
+    Book[0..*] role book
+    BookCategory[1] role bookcategory
+end
+
+association BCM between
+    BookCopy[0..*] role borrowedBook
+    Member[0..1] role currentHolder
+end
+
+association MMC between
+    Member[0..*] role member
+    MemberCategory[1] role membercategory
+end
+
+association BB between
+    BookCopy[0..*] role copy
+    Book[1] role book
+end
+
+association BCMC between
+    BookCategory[0..*] role bookcategory 
+    MemberCategory[0..*] role membercategory
+end
+
+-- constraints
+
+constraints
+

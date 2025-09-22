@@ -1,0 +1,59 @@
+@startuml Person
+
+' classes '
+enum Gender{
+    male
+    female
+}
+
+class Person{
+    firstName: String
+    lastName: String
+    gender: Gender
+    birthDate: Date
+    age: Integer
+    isMarried: Boolean
+    maidenName: String
+    isUnemployed: Boolean
+    income(): Integer
+    currentSpouse(): Person
+    descendants(): Set
+}
+
+class Bank{
+    accountNo: Integer
+}
+
+class Job{
+    title: String
+    startDate: Date
+    salary: Integer
+}
+
+class Company{
+    name: String
+    noEmployees: Integer
+    stockPrice(): Real
+    hireEmployee(p: Person)
+}
+
+class Marriage{
+    place: String
+    date: Date
+    ended: Boolean
+}
+
+' associations '
+Person "employees *" -- "employer *" Company
+(Person, Company) .. Job
+
+Person "manager 1" -- "managedCompanies *" Company
+
+Person "customer 0..1" -- "banks *" Bank
+
+Person "parents 0..2" -- "children *" Person
+
+Person "wife *" -- "husband *" Person
+(Person, Person) .. Marriage
+
+@enduml

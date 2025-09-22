@@ -1,0 +1,97 @@
+@startuml QUDV
+
+' classes '
+class Unit{
+    name: String
+    symbol: String
+    description: String
+    definitionURI: String
+}
+
+class SystemOfUnits{
+    name String
+    symbol: String
+    description: String
+    definitionURI: String
+}
+
+class SystemOfQuantities{
+    name String
+    symbol: String
+    description: String
+    definitionURI: String
+}
+
+class QuantityKind{
+    name String
+    symbol: String
+    description: String
+    definitionURI: String
+}
+
+class Prefix{
+    name: String
+    symbol: String
+    factor: Real
+}
+
+class UnitFactor{
+    exponent: Real
+}
+
+class AffineConversionUnit{
+    factor: Real
+    offset: Integer
+}
+
+class GeneralConversionUnit{
+    expression: String
+    expressionLanguageURI: String
+}
+
+class DerivedUnit{}
+
+class SimpleUnit{}
+
+class ConversionBasedUnit{}
+
+class PrefixedUnit{}
+
+class LinearConversionUnit{}
+
+' associations '
+Unit --> "quantityKind 0..1" QuantityKind
+
+SystemOfUnits --> "systemofQuantities *" SystemOfQuantities
+
+SystemOfUnits --> "unit *" Unit
+
+SystemOfUnits --> "baseUnit *" Unit
+
+SystemOfUnits --> "prefix *" Prefix
+
+SystemOfQuantities --> "baseQuantityKind *" QuantityKind
+
+UnitFactor --> "unit 1" Unit
+
+DerivedUnit --> "factor 1..*" UnitFactor
+
+ConversionBasedUnit --> "referenceUnit 1" Unit
+
+PrefixedUnit --> "prefix 1" Prefix
+
+DerivedUnit --|> Unit
+
+SimpleUnit --|> Unit
+
+ConversionBasedUnit --|> Unit
+
+PrefixedUnit --|> ConversionBasedUnit
+
+LinearConverionUnit --|> ConversionBasedUnit
+
+AffineConversionUnit --|> ConversionBasedUnit
+
+GeneralConversionUnit --|> ConversionBasedUnit
+
+@enduml

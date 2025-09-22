@@ -1,0 +1,29 @@
+@startuml Tournament
+
+' classes '
+class Player{}
+
+class Match{
+    starDate: Date
+    endDate: Date
+    playMove(p,m)
+    getScore()
+}
+
+class Tournament{
+    name: String
+    startDate: Date
+    endDate: Date
+    acceptPlayer(p)
+    removePlayer(p)
+    schedule()
+}
+
+' associations '
+Match "matches *" -- "tournament 1" Tournament
+
+Match "matches *" -- "players *" Player
+
+Player "players *" -- "tournaments *" Tournament
+
+@enduml

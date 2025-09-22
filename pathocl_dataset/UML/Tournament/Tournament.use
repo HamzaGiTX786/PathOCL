@@ -1,0 +1,52 @@
+-- model name
+
+model Tournament
+
+-- classes
+class Date
+end
+
+class Player
+end
+
+class Match
+attributes
+    starttime: Date
+    endtime: Date
+operations
+    playMove(p: Player, m: Match)
+    getScore()
+end
+
+class Tournament
+attributes
+    name: String
+    starttime: Date
+    endtime: Date
+operations
+    acceptPlayer(p: Player)
+    removePlayer(p: Player)
+    schedule()
+end
+
+-- associations
+
+association MT between
+    Match[*] role matches
+    Tournament[1] role t
+end
+
+association MP between
+    Match[*] role matches
+    Player[*] role p
+end
+
+association PT between
+    Player[*] role players
+    Tournament[*] role t
+end
+
+-- OCL constraints
+
+constraints
+

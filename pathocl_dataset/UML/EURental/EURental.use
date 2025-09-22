@@ -1,0 +1,96 @@
+-- model name
+
+model EURental
+
+-- classes
+
+class Date
+attributes
+    date: String
+end
+
+class Car
+attributes
+    regNum: String
+end
+
+class CarGroup
+attributes
+    category: String
+end
+
+class Branch
+attributes
+    address: String
+end
+
+class Quote
+attributes
+    value: Integer
+end
+
+class Rental
+attributes
+    id: String
+    price: Real
+    state: String
+    startingDate: Date
+    endingDate: Date
+end
+
+class Customer
+attributes
+    id: String
+    name: String
+    birthday: Date
+    licenseExpDate: Date
+    premium: Boolean
+    discount: Integer
+end
+
+-- class BlackListed < Customer
+-- attributes
+--     blackListedDate: Date
+-- end
+
+-- associations
+
+association CC between
+    Car[1..*] role car
+    CarGroup[1] role carGroup
+end
+
+association CR between
+    Car[0..1] role car
+    Rental[*] role rentalAgreement
+end
+
+association CGCG between
+    CarGroup[0..1] role low
+    CarGroup[0..1] role high
+end
+
+association CGB between
+    CarGroup[1..*] role carGroup
+    Branch[1..*] role branch
+end
+
+association BR between
+    Branch[1] role pickUpBranch
+    Rental[*] role pickUpRental
+end
+
+association BR2 between
+    Branch[1] role dropOffBranch 
+    Rental[*] role dropOffRental
+end
+
+association RC between
+    Rental[1..*] role rental
+    Customer[1..*] role driver
+end
+
+-- constraints
+
+constraints
+

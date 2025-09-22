@@ -1,0 +1,75 @@
+-- model name
+
+model HealthRecord
+
+-- classes
+
+
+class HealthRecord 
+operations
+    createMedicalInfo(description: String): HealthRecord
+    updateMedicalInfo(description: String): HealthRecord
+    createPrescription(info: MedicalInfo, prescription: Prescription): HealthRecord
+    deletePrescription(prescription: Prescription): HealthRecord
+    readMedicalInfo(MedicalInfo: OclVoid)
+    readPrescription(): Prescription
+end
+
+class Prescription 
+attributes
+    drug: String
+    amount: Integer
+    creator: Doctor
+end
+
+class MedicalInfo 
+attributes
+    description: String
+    creator: Doctor
+    open: Boolean
+end
+
+class Patient 
+attributes
+    name: String
+end
+
+class Doctor end
+
+class Pharmacist end
+
+-- associations
+
+association HP between
+    HealthRecord[1] role record 
+    Patient[1] role owner
+end
+
+association HPR between
+    HealthRecord[1] role record
+    Prescription[0..1] role prescription
+end
+
+association HM between
+    HealthRecord[1] role record
+    MedicalInfo[0..*] role medicalinfo
+end
+
+association PM between
+    Prescription[0..*] role prescription
+    MedicalInfo[1] role medicalinfo
+end
+
+association PD between
+    Patient[0..*] role treats
+    Doctor[0..*] role treatedBy
+end
+
+association PP between
+    Patient[*] role treats
+    Pharmacist[*]
+end
+
+-- constraints 
+
+constraints

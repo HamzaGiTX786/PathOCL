@@ -1,0 +1,54 @@
+-- model name
+
+model Mortgage
+
+-- classes
+
+class Person
+attributes
+    socSecNr: Integer
+    salary: Money
+operations
+    getMortgage(sum: Money, security: House)
+end
+
+class Mortgage
+attributes
+    principal: Money
+    monthlyPayment: Money
+    startDate: Date
+    endDate: Date
+end
+
+class House
+attributes
+    value: Money
+end
+
+class Money
+end
+
+class Date
+end
+
+-- associations
+
+association PH between
+    Person[1] role owner
+    House[0..*] role houses
+end
+
+association HM between
+    House[1] role security
+    Mortgage[0..*] role mortgages
+end
+
+association MP between 
+    Mortgage[0..*] role mortgages
+    Person[1] role borrower
+end
+
+-- OCL constraints
+
+constraints
+

@@ -1,0 +1,51 @@
+@startuml LibraryDomain
+
+' classes '
+class Book{
+    title: String
+}
+
+class BookCopy{
+    barcode: Integer
+    onReserve: Boolean
+}
+
+class Loan{
+    startDate: Date
+    endDate: Date
+}
+
+class Member{
+    name: String
+    email: String
+}
+
+class MemberCategory{
+    description: String
+    maxNumberBooks: Integer
+}
+
+class BookCategory{
+    description: String
+}
+
+class LoanPeriod{
+    duration: Integer
+}
+
+' associations '
+Book "bookOnHold *" -- "{ordered} requester *" Member
+
+Book "book *" --|> "bookcategory 1" BookCategory
+
+BookCopy "borrowedBook *" -- "currentHolder 0..1" Member
+(BookCopy, Member) .. Loan
+
+Member "member *" --|> "membercategory 1" MemberCategory
+
+BookCopy "copy *" --|> "book 1" Book
+
+BookCategory "bookcategory *" -- "membercategory *" MemberCategory
+(BookCategory, MemberCategory) .. LoanPeriod
+
+@enduml

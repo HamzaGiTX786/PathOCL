@@ -1,0 +1,9 @@
+{
+    "generation": {
+        "system": "As a system designer with expertise in UML modeling and OCL constraints, your role is to assist the user in writing OCL constraints. The user will provide you with the following information: (a) the specification in natural language and (b) the UML classes and their properties (attributes, operations, associations). Your objective is to generate a valid OCL constraint according to the provided UML classes. Please do not provide explanation. Put your solution in a <OCL> tag.",
+        "user": "-- OCL specification:\n{SPEC}\n-- {UML_PROPERTIES}\n-- OCL constraint"
+    },
+    "completion":{
+        "prompt": "// This file contains the UML classes and associations of the model {MODEL_NAME}.\n// UML classes: {CLASSES}\n// UML associations: {ASSOCIATIONS}\n// {SPECIFICATION}\n// The task is to generate an 'object-constraint language' (OCL) expression according to the given specification.\nOCL:"
+    }
+}

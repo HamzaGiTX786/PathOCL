@@ -1,0 +1,46 @@
+@startuml HealthRecord
+
+' classes '
+class HealthRecord{
+    readMedicalInfo(MedicalInfo: OclVoid)
+    createMedicalInfo(description: String): HealthRecord
+    updateMedicalInfo(description: String): HealthRecord
+    createPrescription(info: MedicalInfo, prescription: Prescription): HealthRecord
+    deletePrescription(prescription: Prescription): HealthRecord
+    readPrescription(): Prescription
+}
+
+class Prescription{
+    drug: String
+    amount: Integer
+    creator: Doctor
+}
+
+class MedicalInfo{
+    description: String
+    creator: Doctor
+    open: Boolean
+}
+
+class Patient{
+    name: String
+}
+
+class Doctor{}
+
+class Pharmacist{}
+
+' associations '
+HealthRecord "record 1" -- "owner 1" Patient
+
+HealthRecord "record 1" -- "prescription *" Prescription
+
+HealthRecord "record 1" -- "medicalinfo *" MedicalInfo
+
+Prescription "prescription *" -- "medicalinfo 1" MedicalInfo
+
+Patient "treats *" <|-- "treatedBy *" Doctor
+
+Patient "treats *" <|-- Pharmacist
+
+@enduml

@@ -1,0 +1,212 @@
+-- model name
+
+model BusinessRelations
+
+-- classes
+
+class Date end
+
+class BusinessRelations
+attributes
+    Id: Real
+    Name: String
+    EmailAddress: String
+    Budget: Real
+    CreditLimit: Real
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdateBy: String
+    LastUpdateDate: Date
+    BurType: String
+    StreetName: String
+    StreetNumber: String
+    PostalCode: String
+    City: String
+    Country: String
+    ContactPerson: String
+    TelephoneNumber: String
+end
+
+class Customers < BusinessRelations
+end
+
+class Suppliers < BusinessRelations
+end
+
+class Products
+attributes
+    Id: Real
+    Name: String
+    BurId: Real
+    Description: String
+    Price: Real
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdateBy: String
+    LastUpdateDate: Date
+end
+
+class Orders
+attributes
+    Id: Real
+    BurId: String
+    DateOrdered: Date
+    DateShipped: Date
+    Remarks: String
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+end
+
+class Projects
+attributes
+    Id: Real
+    BurId: String
+    Name: String
+    PrjType: String
+    StartDate: Date
+    EndDate: Date
+    Budget: Real
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+end
+
+class OrderLines
+attributes
+    Id: Real
+    OrdId: Real
+    LastUpdateDate: Date
+    LineNumber: Real
+    ProId: Real
+    Price: Real
+    Quantity: Real
+    Total: Real
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdatedBy: String
+end
+
+class ProjectAssignments
+attributes
+    Id: Real
+    PrjId: Real
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+    EmpId: Real
+    StartDate: Date
+    Rate: Real
+    Role: String
+    PercentageAllocated: Real
+    EndDate: Date
+    CreatedBy: String
+    CreationDate: Date
+end
+
+class Employees
+attributes
+    Id: Real
+    LastName: String
+    StreetName: String
+    StreetNumber: String
+    PostalCode: String
+    City: String
+    Country: String
+    TelephoneNumber: String
+    EmailAddress: String
+    BankAccount: Real
+    CivilState: String
+    CreatedBy: String
+    FirstName: String
+    CreationDate: Date
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+    Job: String
+    HireDate: Date
+    DepId: Real
+    EmpId: Real
+    OracleUsername: String
+    Salary: Real
+    Commision: Real
+end
+
+class EmployeesJn
+attributes
+    Id: Real
+    EmpId: Real
+    Salary: Real
+    Commision: Real
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+end
+
+class Departments
+attributes
+    Id: Real
+    Name: String
+    Location: String
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+end
+
+-- associations
+
+association SP between
+    Suppliers[0..1] role suppliers
+    Products[*] role products
+end
+
+association CO between
+    Customers[0..1] role customers
+    Orders[*] role orders
+end
+
+association CP between
+    Customers[0..1] role customers
+    Projects[*] role projects
+end
+
+association POL between
+    Products[0..1] role products
+    OrderLines[*] role orderlines
+end
+
+association OOL between
+    Orders[0..1] role orders
+    OrderLines[*] role orderlines
+end
+
+association PPA between
+    Projects[0..1] role projects
+    ProjectAssignments[*] role projectassignments
+end
+
+association EPA between
+    Employees[0..1] role employees
+    ProjectAssignments[*] role projectassignments
+end
+
+association EEJ between 
+    Employees[1] role employees
+    EmployeesJn[*] role employeejn
+end
+
+association EE between
+    Employees[*] role employees
+    Employees[0..1] role empidemployees
+end
+
+association ED between
+    Employees[*] role employees
+    Departments[0..1] role departments
+end
+
+-- constraints
+
+constraints

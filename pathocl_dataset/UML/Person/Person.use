@@ -1,0 +1,88 @@
+-- model name
+ 
+model Person
+
+-- enumerations
+
+enum Gender{
+    male,
+    female
+}
+
+-- classes
+class Date end
+
+class Person 
+attributes
+    firstName: String
+    lastName: String
+    gender: Gender
+    birthDate: Date
+    age: Integer
+    isMarried: Boolean
+    maidenName: String
+    isUnemployed: Boolean
+operations
+    income(): Integer
+    currentSpouse()
+end
+
+class Bank 
+attributes 
+    accountNo: Integer
+end
+
+class Job
+attributes
+    title: String
+    startDate: Date
+    salary: Integer
+end
+
+class Company
+attributes
+    name: String
+    noEmployees: Integer
+operations
+    stockPrice(): Real
+    hireEmployee(p: Person)
+end
+
+class Marriage
+attributes
+    place: String
+    date: Date
+    ended: Boolean
+end
+
+-- associations
+
+association PCJ between
+    Person[0..*] role employees
+    Company[0..*] role employer
+end
+
+association PC between
+    Person[1] role manager
+    Company[0..*] role managedCompanies
+end
+
+association PB between
+    Person[0..1] role customer
+    Bank[0..*] role banks
+end
+
+association PP between
+    Person[0..2] role parents
+    Person[0..*] role children
+end
+
+association PPM between
+    Person[0..*] role wife
+    Person[0..*] role husband
+end
+
+-- constraints
+
+constraints
+

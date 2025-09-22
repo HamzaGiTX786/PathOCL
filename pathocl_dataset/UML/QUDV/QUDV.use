@@ -1,0 +1,123 @@
+-- model name
+
+model QUDV
+
+-- classes
+
+class Unit
+attributes
+    name: String 
+    symbol: String 
+    description: String 
+    definitionURI: String
+end
+
+class SystemOfUnits
+attributes
+    name: String
+    symbol: String
+    description: String
+    definitionURI: String
+end
+
+class SystemOfQuantities
+attributes
+    name: String
+    symbol: String
+    description: String
+    definitionURI: String
+end
+
+class QuantityKind
+attributes
+    name: String
+    symbol: String
+    description: String
+    definitionURI: String
+end
+
+class Prefix
+attributes
+    name: String
+    symbol: String
+    factor: Real
+end
+
+class UnitFactor
+attributes
+    exponent: Real
+end
+
+class DerivedUnit < Unit end
+
+class SimpleUnit < Unit end
+
+class ConversionBasedUnit < Unit end
+
+class PrefixedUnit < ConversionBasedUnit end
+
+class LinearConversionUnit < ConversionBasedUnit end
+
+class AffineConversionUnit < ConversionBasedUnit
+attributes
+    factor: Real
+    offset: Integer
+end
+
+class GeneralConversionUnit < ConversionBasedUnit
+attributes
+    expression: String
+    expressionLanguageURI: String
+end
+
+-- associations
+
+association UQ between
+    Unit[*] 
+    QuantityKind[0..1] role quantityKind
+end
+
+association SUSQ between
+    SystemOfUnits[*] 
+    SystemOfQuantities[0..*] role systemOfQuantities
+end
+
+association SUU between
+    SystemOfUnits[*] role suu
+    Unit[0..*] role unit
+end
+
+association SU between
+    SystemOfUnits[*] role su
+    Unit[0..*] role baseUnit
+end
+
+association SUP between
+    SystemOfUnits[*] 
+    Prefix[0..*] role prefix
+end
+
+association SQQK between
+    SystemOfQuantities[*] 
+    QuantityKind[0..*] role baseQuantityKind
+end
+
+association UU between
+    UnitFactor[*]
+    Unit[1] role unit
+end
+
+association DU between
+    DerivedUnit[*] 
+    UnitFactor[1..*] role factor
+end
+
+association CU between
+    ConversionBasedUnit[*] 
+    Unit[1] role referenceUnit
+end
+
+-- constraints
+
+constraints
+

@@ -1,0 +1,111 @@
+
+-- model name
+
+model InternetServiceProvider
+
+-- classes
+
+
+class Customer
+attributes
+    id: Integer
+    name: String
+    address: String
+    active: Boolean
+operations
+    changeService(s: Service): Boolean
+end
+
+class Bill
+attributes
+    send_date: Date
+    paid_date: Date
+    amount: Real
+operations
+    confirm_payment(): Boolean
+end
+
+class SurfRecord
+attributes
+    downloadRate: Integer
+operations
+    setRate(rate: Integer): Integer
+    getRate(): Integer
+end
+
+class Provider
+operations
+    disableService(): OclVoid
+    enableService(): OclVoid
+    disableCustomer(): OclVoid
+    reenableCustomer(c: Customer): OclVoid
+    sendBill(): OclVoid
+end
+
+class Service
+attributes
+    price: Real
+    QoS: Integer
+    freedownload: Integer
+operations
+    provide_service(): Boolean
+end
+
+class Date
+operations
+    today(): Date
+    durationInDays(d: Date): Integer
+end
+
+class Max1GB < Service end
+ 
+class Max10GB < Service end
+
+class Max100GB < Service end
+
+-- associations
+
+association CB between
+    Customer[*] role customer
+    Bill[*] role bill
+end
+
+association CS between
+    Customer[*] role customer
+    Service[*] role service
+end
+
+association CP between
+    Customer[1..*] role customer
+    Provider[*] role provider
+end
+
+association CSR between
+    Customer[*] role customer
+    SurfRecord[*] role surfRecord
+end
+
+association BSR between
+    Bill[*] role bill
+    SurfRecord[*] role surfRecord
+end
+
+association BS between
+    Bill[*] role bill
+    Service[*] role service
+end
+
+association SP between
+    SurfRecord[1..*] role surfRecord
+    Provider[1..*] role services
+end
+
+association PS between
+    Provider[*] role provider
+    Service[1..*] role services
+end
+
+-- constraints
+
+constraints
+

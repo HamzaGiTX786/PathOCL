@@ -1,0 +1,99 @@
+@startuml Royal&Loyal
+
+' classes '
+class Date{
+    Year: Integer
+    Month: Integer
+    Day: Integer
+    Hour: Integer
+    Minute: Integer
+    Second: Integer
+    Now: Integer
+    DayOfWeek: String
+}
+
+class LoyaltyProgram{
+    name: String
+    enroll()
+    getServices(): Service
+}
+
+class ProgramPartner{
+    numberOfCustomers: Integer
+    name: String
+}
+
+class Membership{}
+
+class Customer{
+    name: String
+    title: String
+    isMale: Boolean
+    dateOfBirth: Integer
+    age: Integer
+    cAge()
+}
+
+class ServiceLevel{
+    name: String
+}
+
+class Service{
+    condition: Boolean
+    pointsEarned: Integer
+    pointsBurned: Integer
+    description: String
+    serviceNr: Integer
+}
+
+class CustomerCard{
+    valid: Boolean
+    validFrom: Date
+    goodThru: Date
+    color: Color
+    printedName: String
+}
+
+class LoyaltyAccount{
+    points: Integer
+    numbers: Integer
+    earn()
+    burn()
+    isEmpty()
+}
+
+class Transaction{
+    date: String
+    amount: Integer
+    point: Integer
+    programs()
+}
+
+' associations '
+LoyaltyProgram "programs *" -- "participants *" Customer
+
+LoyaltyProgram "programs 1..*" -- "partners 1..*" ProgramPartner
+
+LoyaltyProgram "program 1" -- "levels 1..*" ServiceLevel
+
+LoyaltyProgram "program 0..1" -- "membership 0..1" Membership
+
+Customer "owner 1" -- "cards *" CustomerCard
+
+ProgramPartner "partner 0..1" -- "deliveredServices *" Service
+
+ServiceLevel "currentLevel 1" -- "membership *" Membership
+
+ServiceLevel "level 0..1" -- "availableServices *" Service
+
+Membership --> "card 1" CustomerCard
+
+Membership --> "account 0..1" LoyaltyAccount
+
+CustomerCard "card 1" -- "transactions *" Transaction
+
+LoyaltyAccount "account 1" -- "transactions *" Transaction
+
+Service "generatedBy 0..1" -- "transactions *" Transaction
+
+@enduml

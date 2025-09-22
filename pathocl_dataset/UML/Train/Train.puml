@@ -1,0 +1,23 @@
+@startuml Train
+
+' classes '
+class Train{
+    identifier: String
+    numOfWagons: Integer
+    numOfEngines: Integer
+    weight: Integer
+}
+
+class Wagon{
+    weight: Integer
+    smoking: Boolean
+    currentLoad: Integer
+    capacity: Integer
+}
+
+' associations '
+Train "train 1" -- "wagon *" Wagon
+
+Wagon "succ 0..1" -- "pred 0..1" Wagon
+
+@enduml

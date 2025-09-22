@@ -1,0 +1,62 @@
+model Airport
+
+-- classes
+
+enum Date {year, month, day, time}
+
+class Airport
+attributes
+    name: String
+end
+
+class Flight
+attributes
+    departTime: Date
+    arrivalTime: Date
+    duration: Date
+    maxNrPassenger: Integer
+end
+
+class Airline
+attributes
+    name: String
+end
+
+class Passenger
+attributes
+    minAge: Integer
+    age: Integer
+    needsAssistance: Boolean
+operations
+    book(f: Flight)
+end
+
+-- associations
+
+association AF1 between
+    Airport[1] role origin
+    Flight[*] role departingFlights
+end
+
+association AF2 between
+    Airport[1] role destination
+    Flight[*] role arrivingFlights
+end
+
+association FA between
+    Flight[*] role flights
+    Airline[1] role airline
+end
+
+association FP between
+    Flight[1] role flight
+    Passenger[*] role passengers
+end
+
+association PA between
+    Passenger[0..1] role CEO
+    Airline[0..1] role airline
+end
+
+-- OCL constraints
+constraints

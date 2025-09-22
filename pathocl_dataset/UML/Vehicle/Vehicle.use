@@ -1,0 +1,40 @@
+-- model name
+
+model Vehicle
+
+enum Colour{
+    black, 
+    white, 
+    red
+    }
+
+-- classes
+
+class Person
+attributes
+    name: String
+    age: Integer
+operations
+    birthday()
+    setAge(newAge:Integer): Integer
+end
+
+class Vehicle
+attributes
+    colour: Colour
+end
+
+class Car < Vehicle end
+
+class Bike < Vehicle end
+
+-- associations
+
+association ownership between
+    Person[1] role owner
+    Vehicle[0..*] role fleet
+end
+
+-- constraints
+
+constraints

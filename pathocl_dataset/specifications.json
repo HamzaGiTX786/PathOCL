@@ -1,0 +1,230 @@
+{
+    "Tournament": {
+        "specifications": {
+            "All Matches in a Tournament occur within the Tournament's time frame.": "context Tournament inv: self.matches->forAll(m:Match | m.startDate.after(self.startDate) and m.endDate.before(self.endDate))",
+            "Each Tournament conducts at least one Match on the first day of the Tournament.": "context Tournament inv: self.matches->exists(m:Match | m.startDate.equals(self.startDate))",
+            "A player can not be in two tournaments at the same time.": "NA",
+            "Each tournament must have at least 33 matches and each match must have at least 10 players.": "NA",
+            "A player can only be in one match at a time.": "NA",
+            "A tournament must have at least two players.": "NA",
+            "A match can only have players from the same tournament.": "NA",
+            "A tournament must have at least one match.": "NA",
+            "A player can only play in matches that are part of the tournament they are registered for.": "NA"
+        }
+    },
+    "Royal&Loyal": {
+        "specifications": {
+            "Every customer who enters a loyalty program must be of legal age.": "context Customer inv: self.age >= 18",
+            "Male customers must be approached using the title Mr..": "context Customer inv: self.isMale implies self.title = Mr.",
+            "The number of valid cards for every customer must be equal to the number of programs in which the customer participates.": "context Customer inv: self.cards->select(valid=true)->size()=self.programs->size()",
+            "The validFrom date of customer cards should be earlier than goodThru.": "context CustomerCard inv: self.validFrom < self.goodThru",
+            "The birth date of the owner of a customer card must not be in the future.": "context CustomerCard inv: self.owner.dateOfBirth <> future",
+            "The owner of a customer card must participate in at least one loyalty program.": "context CustomerCard inv: self.owner.programs->size() >= 1",
+            "There must be at least one transaction for a customer card with at least 100 points.": "context CustomerCard inv: self.transactions->select(point >= 100)->size()>= 1",
+            "The service level of each membership must be a service level known to the loyalty program.": "context Membership inv: self.currentLevel->includes(self.program.levels)",
+            "The participants of a membership must have the correct card belonging to this membership.": "context Membership inv: self.programs.participants.cards->includes(self.card)",
+            "The color of a membership's card must match the service level of the membership.": "context Membership inv: self.card.color = self.currentLevel.name",
+            "Memberships must not have associated accounts.": "context Membership inv: self.account->isEmpty()",
+            "Loyalty programs must offer at least one service to their customers.": "context LoyaltyProgram inv: self.partners.deliveredServices->size() >= 1",
+            "If none of the services offered in a loyalty program credits or debits the loyalty accounts, then these instances are useless and should not be present.": "context LoyaltyProgram inv: partners.deliveredServices->forAll(pointsEarned = 0 and pointsBurned = 0) implies Membership.account->isEmpty()",
+            "The name of the first level must be Silver.": "context LoyaltyProgram inv: self.levels->first().name = Silver",
+            "There must exist at least one service level with the name basic.": "context LoyaltyProgram inv: self.level->exists(name = 'basic')",
+            "The number of participants in a loyalty program must be less than 10,000.": "context LoyaltyProgram inv: self.participants->size()<10000",
+            "The number of the loyalty account must be unique within a loyalty program.": "context LoyaltyProgram inv: self.Membership.account->isUnique(acc|acc.numbers)",
+            "The names of all customers of a loyalty program must be different.": "context LoyaltyProgram inv: self.participants.name->forAll(c1,c2|c1.name<>c2.name)",
+            "The maximum age of participants in loyalty programs is 70.": "context LoyaltyProgram inv: self.participants->forAll(age<= 70)",
+            "There may be only one loyalty account that has a number lower than 10,000.": "context LoyaltyProgram inv: self.Membership.account->one(number < 10,000)",
+            "The attribute numberOfCustomers of class ProgramPartner must be equal to the number of customers who participate in one or more loyalty programs offered by this program partner.": "context ProgramPartner inv: self.numberOfCustomers=programs.participants->asSet()->size()",
+            "A maximum of 10,000 points may be earned using services of one partner.": "context ProgramPartner inv: self.deliveredServices.pointsEarned<=10,000",
+            "All cards that generate transactions on the loyalty account must have the same owner.": "context LoyaltyAccount inv: self.transactions.cards.owner->asSet()->size() = 1",
+            "If the points earned in a loyalty account is greater than zero: , there exists a transaction with more than zero points.": "context LoyaltyAccount inv: points > 0 implies transactions->exists(t | t .points > 0)",
+            "There must be one transaction with exactly 500 points.": "context Transaction inv: self.transaction->select(point = 500)->size()=1",
+            "The available services for a service level must be offered by a partner of the loyalty program to which the service level belongs.": "context ServiceLevel inv: self.program.partners->includesAll(self.availableServices.partner)"
+        }
+    },
+    "EmploymentAgency": {
+        "specifications": {
+            "The age of employees must be greater than or equal to 18": "context Employee inv: self.age() >= 18",
+            "The supervisor of an employee must be older than the employee": "context Employee inv: self.supervisor->notEmpty() implies self.age() > self.supervisor.age()",
+            "The salary of an employee cannot be greater than the salary of his/her supervisor": "context Employee inv: self.supervisor->notEmpty() implies self.salary < self.supervisor.salary",
+            "The hire date of employees must be greater than their birth date": "context Employee inv: self.hireDate > self.birthDate",
+            "The start date of an employe as manager of a department must be greater than his/her hire date": "context Employee inv: self.manages->notEmpty() implies self.manages.startDate > self.hireDate",
+            "A supervisor must be hired before every employee s/he supervises": "context Employee inv: self.subordinates->notEmpty() implies self.subordinates->forall( e | e.hireDate > self.hireDate )",
+            "The manager of a department must be an employee of the department": "context Department inv: self.worksFor->includes(self.manages.employee)",
+            "The SSN of employees is an identifer (or a key)": "context Employee inv: Employee.allInstances->forAll( e1, e2 | e1 <> e2 implies e1.SSN <> e2.SSN )",
+            "The name and relationship of dependents is a partial identifer: they are unique among all dependents of an employee": "context Employee inv: self.dependents->notEmpty() implies self.dependents->forAll( e1, e2 | e1 <> e2 implies ( e1.name <> e2.name or e1.relationship <> e2.relationship ))",
+            "The location of a project must be in one of the locations of its department": "context Project inv: self.controls.locations->includes(self.location)",
+            "The attribute nbrEmployees in Department keeps the number of employees that works for the department": "context Department inv: self.nbrEmployees = self.worksFor->size()",
+            "An employee works at most in 4 projects": "context Employee inv: self.worksOn->size() <= 4",
+            "An employee may only work on projects controlled by the department in which s/he works": "context Employee inv: self.worksFor.controls->includesAll(self.worksOn.project)",
+            "An employee works at least 30h/week and at most 50 h/week on all its projects": "context Employee inv: let totHours: Integer = self.worksOn->collect(hours)->sum() in totHours >= 30 and totHours <=50",
+            "A project can have at most 2 employees working on the project less than 10 hours": "context Project inv: self.worksOn->select( hours < 10 )->size() <= 2",
+            "Only department managers can work less than 5 hours on a project": "context Employee inv: self.worksOn->select( hours < 5 )->notEmpty() implies Department.allInstances()->collect(manages.employee)-> includes(self)",
+            "The only managers that can work less than 5 hours on a department project must be an employee of the department itself": "context Employee inv: self.worksOn->select( hours < 5 )->notEmpty() implies self.worksFor.manages.employee=self",
+            "Employees without subordinates must work at least 10 hours on every project they work": "context Employee inv: self.subordinates->isEmpty() implies self.worksOn->forAll( hours >=10 )",
+            "The manager of a department must work at least 5 hours on all projects controlled by the department": "context Department inv: self.controls->forall( p:Project | self.manages.employee.worksOn->select(hours >= 5)->contains(p) )",
+            "An employee cannot supervise him/herself": "context Employee inv: self.subordinates->excludes(self)",
+            "The supervision relationship must not be cyclic": "context Employee def: allSubordinates = self.subordinates->union(self->subordinates->collect(e:Employee | e.allSubordinates)) inv: self.allSubordinates->exludes(self)",
+            "The length of a person's first name is always less than 20 characters: , and so is the length of their last name.": "NA",
+            "Anyone who manages a company is an employee of that company.": "NA",
+            "Every company has a male employee": "NA",
+            "It is a class invariant of Person that nobody can have more than 5 bank accounts.": "NA",
+            "Nobody can have two employments with companies that have identical names.": "NA"
+        }
+    },
+    "EURental": {
+        "specifications": {
+            "Rental ending date must be later or equal than starting date": "context Rental inv: self.startingdate <= self.endingDate",
+            "On Mondays the agency is close (so no rentals starting on a Monday)": "context Rental inv: not self.startingDate.dayOfTheWeek()<>DayOftheWeek::Monday",
+            "Minimum duration of a rental is 10 hours": "context Rental inv: (self.endDate - self.startingDate).hours() >= 10",
+            "Last Friday of each month the agency is closed": "context Rental inv: not self.startingdate = self.startingdate.getMonth().last('Friday')",
+            "Same customer cannot rent twice in the same week": "NA"
+        }
+    },
+    "Airport": {
+        "specifications": {
+            "All flight objects must have a duration attribute that is less than four": "context Flight inv: self.duration < 4",
+            "The maximum number of passengers on any flight may not exceed 1000": "context Flight inv: self.maxNrPassenger <= 1000",
+            "For every passenger the age attribute must be greater than or equal to the class attribute minAge": "context Passenger inv: self.age >= self.minAge",
+            "The duration attribute of all flight objects must be equal to the difference between the arrivalTime attribute and the departTime attribute": "context Flight inv: self.duration = self.arrivalTime - self.departTime",
+            "The airport from which a flight is leaving is different from the destination airport": "context Flight inv: self.origin <> self.destination",
+            "For every flight the name of the airport from which it is leaving must be 'Amsterdam'": "context Flight inv: self.origin.name = 'Amsterdam'",
+            "For every flight the name of the airline must be 'KLM'": "context Flight inv: self.airline.name = 'KLM'"
+        }
+    },
+    "QUDV": {
+        "specifications": {
+            "The referenceUnit shall not be a PrefixedUnit": "context PrefixedUnit inv: not referenceUnit->oclIsTypeOf(PrefixedUnit)",
+            "In a coherent system of units, there is only one base unit for each base quantity.": "context SystemOfUnits inv: self.systemOfQuantities.baseQuantityKind.size() = self.baseUnit->size() = 1",
+            "A coherent derived unit is a derived unit that, for a given system of quantities and for a chosen set of base units, is a product of powers of base units with no other proportionality factor than one.": "NA"
+        }
+    },
+    "InvoicingOrders": {
+        "specifications": {
+            "The stock of a Product is always a natural number, i.e., it is a positive Integer. This also ensures the definedness of the stock.": "context Product inv isNat: self.stock >= 0",
+            "The Product id is unique.": "context Product inv idUnique: Product::allInstances()->forAll(p1:Product, p2:Product | p1.id <> p2.id)",
+            "The quantity of an Order is always a natural number, i.e., it is a positive Integer. This also ensures the definedness of the quantity.": "context Order inv isNat: self.quantity >= 0",
+            "The state of an Order should either be `pending'  or `invoiced'.": "context Order inv stateRange: (self.state = 'pending') or (self.state = 'invoiced')",
+            "The Order id is unique.": "context Order inv idUnique: Order::allInstances()->forAll(o1:Order, o2:Order | o1.id <> o2.id)",
+            "order(...) function creates a new Order": "context Order::Order(prd:Product, qty:Integer):OclVoid pre: qty > 0 pre: self.warehouse.products->exists(x:Product | x = prd) pre: not prd.oclIsUndefined() post: self.oclIsNew() and  self.quantity = qty and self.orderedProduct = prd",
+            "The state of the order will be changed into 'invoiced' if the ordered quantity is either less or equal to the quantity which is in stock according to the reference of the ordered product.": "context Order::invoice() : Boolean pre: self.state = 'pending' and self.quantity <= self.orderedProduct.stock post: self.state = 'invoiced' and self.quantity = self.quantity@pre and self.orderedProduct = self.orderedProduct@pre and self.orderedProduct.stock = self.orderedProduct@pre.stock - self.quantity",
+            "cancel() function cancels order as an opposite operation to invoice order": "context Order::cancel() : Boolean pre:  self.state = 'invoiced' post: self.state = 'pending' and self.quantity = self.quantity@pre and self.product = self.product@pre and self.product.stock = self.product@pre.stock + self@pre.quantity",
+            "supply(...) function adds quantity of the product to the stock": "context Product::supply(qty:Integer):Boolean pre: qty > 0 post: self.stock = self.stock@pre + qty",
+            "release(...) removes quantity of the product from the stock": "context Product::release(qty:Integer):Boolean pre:  self.stock >= qty post: self.stock = self.stock@pre - qty"
+        }
+    },
+    "Mortgage": {
+        "specifications": {
+            "The start date for any mortgage must be before the end date.": "context Mortgage: inv: startDate < endDate",
+            "A person may have a mortgage on a house only if that house is owned by the person.": "context Mortgage: inv: self.security.owner = self.borrower",
+            "A person may have mortgage on a house only if that house is owned by the person (use Person as context).": "context Person: inv: self.mortgages.security.owner->forAll(p : Person | p = self)",
+            "The social security number of all persons must be unique (use House as a context).": "context Person: inv: Person::allInstance()->forAll(p1,p2 : Person | p1<>p2 implies p1.socSecNr <> p2.socSecNr)",
+            "The social security number of all persons must be unique (use Person as a context).": "context Person::getMortgage(sum:Money, security:House) pre: self.mortgages.monthlyPayment->sum() <= self.salary * 0.30",
+            "A new mortgage will be allowed only when the person's income is sufficient (assume that the yearly payment must be less than 30% of the salary).": "context Person::getMortgage(sum:Money, security:House) pre: security.value >= (security.mortgages.principal->sum() + sum)",
+            "A new mortgage will be allowed only when the counter value of the house is sufficient.": "NA"
+        }
+    },
+    "Train": {
+        "specifications": {
+            "All the trains will have the same number of wagons.": "context Train: inv: self.wagon -> size() >= 1",
+            "A wagon and its successor wagon should belong to the same train.": "context Wagon: inv: self.succ -> notEmpty() implies self.succ.train = self.train",
+            "The current load of a wagon cannot exceed its capacity": "context Train: inv: Train.allInstances -> forAll(x:Train,y:Train | x.wagon->size() = y.wagon->size() )",
+            "The length of a train should not exceed 25 train units, i.e. wagons or train engines.": "NA",
+            "Every train must have at least one train engine": "NA"
+        }
+    },
+    "Person": {
+        "specifications": {
+            "Value of attribute noEmployees in instances of Company must be less than or equal to 50": "context Company inv: self.noEmployees <= 50",
+            "The stock price of companies is greater than 0": "context Company inv: self.stockPrice() > 0",
+            "Income of a person is the sum of the salaries of her jobs": "context Person::income(): Integer body: self.job.salary->sum()",
+            "descendants() obtains the direct and indirect descendants of a person": "context Person::descendants(): Set body: result = self.children->union(self.children->collect(c | c.descendants()))",
+            "Only married women can have a maiden name": "context Person inv: self.maidenName <> `' implies self.gender = Gender::female and self.isMarried = true",
+            "A person is currently married to at most one person": "context Person inv: self.marriage[wife]->select(m | m.ended = false)->size()=1 and self.marriage[husband]->select(m | m.ended = false)->size()=1",
+            "currentSpouse() selects the current spouse of a person": "context Person::currentSpouse() : Person pre: self.isMarried = true body: if gender = Gender::male self.marriage[wife]->select(m | m.ended = false).wife else self.marriage[husband]->select(m | m.ended = false).husband",
+            "A bank can use the accountNumber attribute to select a particular customer": "NA",
+            "There are at most 100 persons": "context Person inv: Person.allInstances()->size() <= 100",
+            "A company has at least one employee older than 50": "context Company inv: self.employees->select(age > 50)->notEmpty()",
+            "The collection of employees of a company who are less than 18 years old is empty": "context Company inv: self.employees->reject(age>=18)->isEmpty()",
+            "The age of each employee is less than or equal to 65": "context Company inv: self.employees->forAll(age <= 65)",
+            "All instances of persons have unique names": "context Person inv: Person.allInstances()->forAll(p1, p2 | p1 <> p2 implies p1.name <> p2.name )",
+            "The firstName of at least one employee is equal to 'Jack'": "context Company inv: self.employees->exists(firstName = 'Jack')"
+        }
+    },
+    "Vehicle": {
+        "specifications": {
+            "A vehicle owner must be at least 18 years old": "context Vehicle inv: self. owner. age >= 18",
+            "Nobody has more than 3 vehicles": "context Person inv: self.fleet->size <= 3",
+            "All cars of a person are black": "context Person inv: self.fleet->forAll(v | v.colour = #black)",
+            "Nobody has more than 3 black vehicles": "context Person inv: self.fleet->forAll(v | v.colour = #black) -> size <= 3",
+            "A person younger than 18 owns no cars": "context Person inv: age<18 implies self.fleet->forAll(v | not v.oclIsKindOf(Car))",
+            "There is a red car": "context Car inv: Car.allInstances()->exists(c | c.colour=#red)",
+            "If setAge(. . . ) is called with a non-negative argument then the argument becomes the new value of the attribute age": "context Person::setAge(newAge:int) pre: newAge >= 0 post: self.age = newAge",
+            "Calling birthday() increments the age of a person by 1": "context Person::birthday() post: self.age = self.age@pre + 1",
+            "Calling getName() delivers the value of the attribute name": "context Person::getName() post: result = name"
+        }
+    },
+    "LibraryDomain": {
+        "specifications": {
+            "A book cannot be borrowed by more than one member": "NA",
+            "The number of books on loan for a given member does not exceed the maximum number of books on loan allowed for his category": "NA",
+            "A given member cannot be twice on the waiting list for the same book": "NA",
+            "A member is not allowed to place holds on more than 5 books in each category": "NA",
+            "Every book category must have a maximum length of loan period  defined for every member category": "NA",
+            "A book that is on reserve can not be on loan": "NA"
+        }
+    },
+    "BusinessRelations": {
+        "specifications": {
+            "You may not have more than one clerk per department": "NA",
+            "There may not be more than 20 departments": "NA",
+            "Employee salary must be > 0": "NA",
+            "Employee job must be 'CLERK', 'MANAGER', 'PRESIDENT', 'SALESMAN', 'ANALYST'": "NA",
+            "Employee Userid must contain at least 5 characters": "NA",
+            "Employee civil state must be 'S' (Single), 'M' (Married), 'D' (Divorced) or 'W' (Widowed)": "NA",
+            "Employee civil state may change from Single, Divorced or Widowed to Married, and from Married to Widowed or Divorced": "NA",
+            "An employee with job 'SALESMAN' must have a value for commission": "NA",
+            "When creating a new employee, derive the id as the next value in a database sequence": "NA",
+            "When the employee salary or commission changes, record the change in a journal table": "NA",
+            "Customer budget must be between 10000 and 100000": "NA",
+            "Project budget must be between 10000 and 100000": "NA",
+            "When the project start date changes, automatically change the start date of all project assignments that start on the old project start date or before the new project start date to the new date": "NA",
+            "An employee whose job is 'ANALYST' may only view projects to which s/he has been assigned. Employees with any other job may view all projects": "NA",
+            "You may not change the rate, role or percentage allocated for a project assignment that is currently active": "NA",
+            "The project assignment start date must be between the projects' start and end dates": "NA",
+            "You may not create a project assignment for a project that is already closed (end date in the past)": "NA",
+            "Send an email to the employee's manager whenever the end date of a project assignment is changed": "NA",
+            "You may not delete an order after it has been shipped": "NA",
+            "When creating a new order line, default the price to the products' price at the time the order was placed": "NA",
+            "When creating or updating an order line, calculate the Total as Quantity * the Product's current Price": "NA",
+            "Total income is equal to the salary plus the commision": "NA",
+            "When Total Income is inserted or changed and the rule is violated, a message will be raised": "NA",
+            "Each department is uniquely identified by a department identifier": "NA",
+            "A department's identifier must be unique": "NA",
+            "Each order line must belong to one and only one order": "NA",
+            "Each employee must work for one and only one department": "NA",
+            "A product must be supplied by a Business Relation of type Supplier": "NA",
+            "When creating a new order line, default the Quantity to 1": "NA",
+            "When creating a new Employee, derive the Id as the next value in a database sequence": "NA"
+        }
+    },
+    "HealthRecord": {
+        "specifications": {
+            "You can only add a prescription if you have previously created the corresponding MedicalInfo": "context HealthRecord::createMedicalInfo(p:MedicalInfo,prescription:Prescription):HealthRecord pre perm1: p.creator = environment.caller ",
+            "To create a MedicalInfo about a patient you need to be one of its doctors": "context HealthRecord::createMedicalInfo(description:String):HealthRecord post perm2:  self.owner.treatedBy.oclAsType(OclAny) ->includes (environment.caller.oclAsType(OclAny))",
+            "To create a MedicalInfo, you need to be a doctor (not necessarily the one of the patient)": "context HealthRecord::createMedicalInfo(description:String):HealthRecord pre perm3: environment.caller.role = 'Doctor'",
+            "The amount of a prescription must not be too large": "context Prescription inv AmountNotTooLarge: self.amount < 1000",
+            "Closed medical infos can only be read by the doctor which created it": "context HealthRecord::readMedicalInfo():MedicalInfo post perm4: resultresult.creator.oclAsType(OclAny) = environment.caller.oclAsType(OclAny)"
+        }
+    },
+    "ISP": {
+        "specifications": {
+            "For the service ``1GB'' the free download variable should be invariant and be set to 1.": "context Max1GB inv : self.freedownload = 1024",
+            "A customer can only have a service from his service provider": "context Provider inv onlyOfferedService: self.services->includesAll(self.customer->collect(c:Customer | c.service)->asSet())",
+            "If the download rate of a customer (in Surf-Record) is lower than the freedownload of his service, then the amount_of_money in his bill is equal to the price in the service.": "context Bill inv: self.surfRecord.downloadRate <= self.service.freedownload implies self.amount = self.service.price",
+            "If the bill has not been paid for 30 days, the customer's flag active will be set to false": "context Customer inv: self.bill.send_date.durationInDays(self.bill.paid_date.today()) > 30 and self.bill.send_date.durationInDays(self.bill.paid_date) > 30 implies not self.active ",
+            "Each customer must have a unique ID.": "context Customer inv: self.allInstances()->isUnique(self.id)",
+            "A customer can only view his own downloadrate": "context SurfRecord::getRate():Integer pre perm1: environment.caller.oclAsType(oclLib.OclAny) = self.customer.oclAsType(oclLib.OclAny) pre perm1:  environment.caller = self.customer"
+        }
+    }
+}

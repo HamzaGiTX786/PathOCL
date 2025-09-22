@@ -1,0 +1,97 @@
+-- model name
+
+model EmploymentAgency
+
+-- classes
+class Date end
+
+class Employee
+attributes
+    SSN: Integer
+    firstName: String
+    lastName: String
+    birthDate: Date
+    sex: String
+    salary: Integer
+    address: String
+    hireDate: Date
+operations
+    age()
+end
+
+class Department 
+attributes
+    number: Integer
+    name: String
+    locations: String
+    nbrEmployees: Integer
+end
+
+class Project
+attributes 
+    number: Integer
+    name: String
+    location: String
+end
+
+class Dependent
+attributes
+    name: String
+    relationship: String
+    sex: String
+    birthDate: Date
+end
+
+-- Association classe
+associationclass Manages
+between
+    Employee[1] role manager
+    Department[0..1] role department
+attributes
+    startDate: Date
+end
+
+-- Association classe
+associationclass WorksOn
+between
+    Employee[1..*] role owned
+    Project[1..*] role worksOn
+attributes
+    hours: Integer
+end
+
+-- associations
+
+-- association EDM between
+--     Employee[1] role manager
+--     Department[0..1] role dep
+-- end
+
+association EDW between
+    Employee[4..*] role employee
+    Department[1] role dep
+end
+
+-- association EPW between
+--     Employee[1..*] role worksOn
+--     Project[1..*] role project
+-- end
+
+association EES between
+    Employee[0..1] role supervisor
+    Employee[0..*] role subordinates
+end
+
+association ED between
+    Employee[1] role employe
+    Dependent[0..*] role dependents
+end
+
+association DP between
+    Department[1..*] role department 
+    Project[1] role controls
+end
+
+-- constraints
+
+constraints

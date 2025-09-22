@@ -1,0 +1,152 @@
+-- model name
+
+model RoyalAndLoyal
+
+-- classes
+
+class LoyaltyProgram
+attributes
+    name: String
+operations
+    enroll()
+    getServices(): Service
+end
+
+class ProgramPartner
+attributes
+    numberOfCustomers: Integer
+    name: String
+end
+
+class Membership
+end
+
+class Customer
+attributes
+    name: String
+    title: String
+    isMale: Boolean
+    dateOfBirth: Integer
+    age: Integer
+operations
+    cAge()
+end
+
+class ServiceLevel
+attributes
+    name: String
+end
+
+class Service
+attributes
+    condition: Boolean
+    pointsEarned: Integer
+    pointsBurned: Integer
+    description: String
+    serviceNr: Integer
+end
+
+class CustomerCard
+attributes
+    valid: Boolean
+    validFrom: Date
+    goodThru: Date
+    color: Color
+    printedName: String
+end
+
+class LoyaltyAccount
+attributes
+    points: Integer
+    numbers: Integer
+operations
+    earn()
+    burn()
+    isEmpty()
+end
+
+class Transaction
+attributes
+    date: String
+    amount: Integer
+    point: Integer
+operations
+    programs()
+end
+
+enum Date {year, month, day, time}
+
+enum Color {gold, silver}
+
+-- associations
+
+association LC between
+    LoyaltyProgram[0..*] role programs
+    Customer[0..*] role participants
+end
+
+association LP between
+    LoyaltyProgram[1..*] role programs
+    ProgramPartner[1..*] role partners
+end
+
+association LS between
+    LoyaltyProgram[1] role programs
+    ServiceLevel[1..*] role levels
+end
+
+association LM between
+    LoyaltyProgram[0..1] role programs
+    Membership[0..1] role membership
+end
+
+association CC between
+    Customer[1] role owner
+    CustomerCard[0..*] role cards
+end
+
+association PS between
+    ProgramPartner[0..1] role partner
+    Service[0..*] role deliveredServices
+end
+
+association SM between
+    ServiceLevel[1] role currentLevel
+    Membership[0..*] role membership
+end
+
+association SS between
+    ServiceLevel[0..1] role level
+    Service[0..*] role availableServices
+end
+
+-- Direct relationship
+-- Presented as 0
+association MC between
+    Membership[0]
+    CustomerCard[1] role card
+end
+
+association ML between
+    Membership[0]
+    LoyaltyAccount[0..1] role account
+end
+
+-- 
+
+association CT between
+    CustomerCard[1] role card
+    Transaction[0..*] role transactions
+end
+
+association LT between
+    LoyaltyAccount[1] role account 
+    Transaction[0..*] role transactions
+end
+
+association ST between
+    Service[0..1] role generatedBy
+    Transaction[0..*] role transactions
+end
+
+constraints

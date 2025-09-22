@@ -1,0 +1,33 @@
+@startuml Vehicle
+
+' classes '
+enum Colour{
+    black(): Colour
+    white(): Colour
+    red(): Colour
+}
+
+class Person{
+    name: String
+    age: Integer
+    getName(): String
+    setAge(newAge:int): Integer
+    birthday()
+}
+
+class Vehicle{
+    colour: Colour
+}
+
+class Car{}
+
+class Bike{}
+
+' associations '
+Person "owner 1" -- "fleet *" Vehicle: ownership
+
+Car --|> Vehicle
+
+Bike --|> Vehicle
+
+@enduml

@@ -1,0 +1,59 @@
+@startuml EmploymentAgency
+
+' classes '
+class Employee{
+    SSN: Integer
+    firstName: String
+    lastName: String
+    birthDate: Date
+    sex: String
+    salary: Integer
+    address: String
+    hireDate: Date
+    age()
+}
+
+class Department{
+    number: Integer
+    name: String
+    locations: String
+    nbrEmployees: Integer
+}
+
+class Project{
+    number: Integer
+    name: String
+    location: String
+}
+
+class Dependent{
+    name: String
+    relationship: String
+    sex: String
+    birthDate: Date
+}
+
+class Manages{
+    startDate: Date
+    }
+
+class WorksOn{
+    hours: Integer
+    }
+
+' associations '
+Employee "manager 1" -- "department 0..1" Department
+(Employee, Department) .. Manages
+
+Employee "employee 4..*" -- "department 1" Department: WorksFor
+
+Employee "owned 1..*" -- "worksOn 1..*" Project
+(Employee, Project) .. WorksOn
+
+Employee "supervisor 0..1" -- "subordinates *" Employee: Supervision
+
+Employee "employee 1" -- "dependents *" Dependent
+
+Department "department 1..*" -- "controls 1" Project
+
+@enduml

@@ -1,0 +1,38 @@
+-- Model name
+
+model Train
+
+-- classes
+
+class Train
+attributes
+    identifier: String
+    numOfWagons: Integer
+    numOfEngines: Integer
+    weight: Integer
+end
+
+class Wagon
+attributes
+    weight: Integer
+    smoking: Boolean
+    currentLoad: Integer
+    capacity: Integer
+end
+
+-- associations
+
+association TW between
+    Train[1] role train
+    Wagon[*] role wagon 
+end
+
+association WW between
+    Wagon[0..1] role succ
+    Wagon[0..1] role pred
+end
+
+-- constraints
+
+constraints
+

@@ -1,0 +1,74 @@
+@startuml ISP
+
+' classes '
+class Customer{
+    id: Integer
+    name: String
+    address: String
+    active: Boolean
+    changeService(s: Service): Boolean
+}
+
+class Bill{
+    send_date: Date
+    paid_date: Date
+    amount: Real
+    confirm_payment(): Boolean
+}
+
+class SurfRecord{
+    downloadRate: Integer
+    setRate(rate: Integer): Integer
+    getRate(): Integer
+}
+
+class Provider{
+    disableService(): OclVoid
+    enableService(): OclVoid
+    disableCustomer(): OclVoid
+    reenableCustomer(c: Customer): OclVoid
+    sendBill(): OclVoid
+}
+
+class Service{
+    price: Real
+    QoS: Integer
+    freedownload: Integer
+    provide_service(): Boolean
+}
+
+class Date{
+    today(): Date
+    durationInDays(d: Date): Integer
+}
+
+class Max1GB{}
+
+class Max10GB{}
+
+class Max100GB{}
+
+' associations '
+Customer "customer" -- "bill" Bill
+
+Customer "customer" -- "service" Service
+
+Customer "customer 1..*" -- "provider" Provider
+
+Customer "customer" -- "surfRecord" SurfRecord
+
+Bill "bill" -- "surfRecord" SurfRecord
+
+Bill "bill" -- "service" Service
+
+SurfRecord "surfRecord 1..*" -- "provider" Provider
+
+Provider "provider" -- "services 1..*" Service
+
+Service <|-- Max1GB
+
+Service <|-- Max10GB
+
+Service <|-- Max100GB
+
+@enduml

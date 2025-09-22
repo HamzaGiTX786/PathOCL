@@ -1,0 +1,28 @@
+@startuml Mortgage
+
+' classes '
+class Person{
+    socSecNr: Integer
+    salary: Money
+    getMortgage(sum: Money, security: House)
+}
+
+class Mortgage{
+    principal: Money
+    monthlyPayment: Money
+    startDate: Date
+    endDate: Date
+}
+
+class House{
+    value: Money
+}
+
+' associations '
+Person "owner 1" -- "houses *" House
+
+House "security 1" -- "mortgages *" Mortgage
+
+Mortgage "mortgages *" -- "borrower 1" Person
+
+@enduml

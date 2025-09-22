@@ -1,0 +1,173 @@
+@startuml BusinessRelations
+
+' classes '
+class BusinessRelations{
+    Id: Real
+    Name: String
+    EmailAddress: String
+    Budget: Real
+    CreditLimit: Real
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdateBy: String
+    LastUpdateDate: Date
+    BurType: String
+    StreetName: String
+    StreetNumber: String
+    PostalCode: String
+    City: String
+    Country: String
+    ContactPerson: String
+    TelephoneNumber: String
+}
+
+class Customers{
+    BurType: String
+    Budget: Real
+    CreditLimit: Real
+}
+
+class Suppliers{
+    BurType: String
+}
+
+class Products{
+    Id: Real
+    Name: String
+    BurId: Real
+    Description: String
+    Price: Real
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdateBy: String
+    LastUpdateDate: Date
+}
+
+class Orders{
+    Id: Real
+    BurId: String
+    DateOrdered: Date
+    DateShipped: Date
+    Remarks: String
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+}
+
+class Projects{
+    Id: Real
+    BurId: String
+    Name: String
+    PrjType: String
+    StartDate: Date
+    EndDate: Date
+    Budget: Real
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+}
+
+class OrderLines{
+    Id: Real
+    OrdId: Real
+    LastUpdateDate: Date
+    LineNumber: Real
+    ProId: Real
+    Price: Real
+    Quantity: Real
+    Total: Real
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdatedBy: String
+}
+
+class ProjectAssignments{
+    Id: Real
+    PrjId: Real
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+    EmpId: Real
+    StartDate: Date
+    Rate: Real
+    Role: String
+    PercentageAllocated: Real
+    EndDate: Date
+    CreatedBy: String
+    CreationDate: Date
+}
+
+class Employees{
+    Id: Real
+    LastName: String
+    StreetName: String
+    StreetNumber: String
+    PostalCode: String
+    City: String
+    Country: String
+    TelephoneNumber: String
+    EmailAddress: String
+    BankAccount: Real
+    CivilState: String
+    CreatedBy: String
+    FirstName: String
+    CreationDate: Date
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+    Job: String
+    HireDate: Date
+    DepId: Real
+    EmpId: Real
+    OracleUsername: String
+    Salary: Real
+    Commission: Real
+}
+
+class EmployeesJn{
+    Id: Real
+    EmpId: Real
+    Salary: Real
+    Commission: Real
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+}
+
+class Departments{
+    Id: Real
+    Name: String
+    Location: String
+    CreatedBy: String
+    CreationDate: Date
+    LastUpdatedBy: String
+    LastUpdateDate: Date
+}
+
+' associations '
+BusinessRelations <|-- Suppliers
+
+BusinessRelations <|-- Customers
+
+Suppliers "suppliers 0..1" -- "products *" Products
+
+Customers "customers 0..1" -- "orders *" Orders
+
+Customers "customers 0..1" -- "projects *" Projects
+
+Products "products 0..1" -- "orderlines *" OrderLines
+
+Orders "orders 0..1" -- "orderlines *" OrderLines
+
+Projects "projects 0..1" -- "projectassignments *" ProjectAssignments
+
+Employees "employees 0..1" -- "projectassignments *" ProjectAssignments
+
+Employees "employees 1" -- "employeesjn *" EmployeesJn
+
+Employees "employees *" -- "empidemployees 0..1" Employees
+
+Employees "employees *" -- "departments 0..1" Departments
+
+@enduml
